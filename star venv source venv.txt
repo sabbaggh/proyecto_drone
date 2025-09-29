@@ -1,0 +1,16 @@
+star venv
+--source venv/bin/activate
+start sitl
+--dronekit-sitl copter --home=20.432753,-99.599402,0,0
+
+start connection to copter (in case of using mavproxy)
+1. start venv in folder
+2. get inside venv and bin
+3. run "python mavproxy.py --master tcp:127.0.0.1:5760 --out udp:127.0.0.1:14551 --out udp:10.0.2.15:14550"
+
+3. run "python mavproxy.py --master tcp:127.0.0.1:5760 --out udp:127.0.0.1:14551 --out udp:127.0.0.1:14550"
+
+start mission planner
+1. get inside mission planner folder in downloads
+2. run "mono MissionPlanner.exe" in terminal
+
