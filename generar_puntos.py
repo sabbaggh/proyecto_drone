@@ -19,13 +19,16 @@ def generar_malla(esquinas, step=0.000020):
     lon_min, lon_max = min(longitudes), max(longitudes)
 
     # Generar la malla
-    grid_points = []
+    malla = []
+    
     lat = lat_min
     while lat <= lat_max:
+        grid_points = []
         lon = lon_min
         while lon <= lon_max:
             grid_points.append((lat, lon))
             lon += step
         lat += step
+        malla.append(grid_points)
 
-    return grid_points
+    return malla

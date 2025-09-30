@@ -14,7 +14,7 @@ prueba = [
 
 puntos_generados = generar_malla(prueba)
 
-# Conexión al SITL (ajusta el puerto si es necesario)
+# Conexión al SITL (despues se cambiaria por la pixhawk)
 vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
 
 def arm_and_takeoff(aTargetAltitude):
@@ -49,31 +49,43 @@ def arm_and_takeoff(aTargetAltitude):
 arm_and_takeoff(3)
 
 
-
+normal = 1
 # ----------------------------
 #Ciclo for para recorrer todos los puntos
-for i in range(len(puntos_generados)):
-    # 2) Definimos un punto GPS al que ir
-    target_location = LocationGlobalRelative(puntos_generados[i][0],puntos_generados[i][1], 3)  #Ejemplo en el rancho de Aron
+for puntos in puntos_generados:
+    puntos_totales = len(puntos)
+    for i in range(puntos_totales):
+        # 2) Definimos un punto GPS al que ir
+        #Se hace el recorrido al reves
+        if normal % 2 == 0:
+            target_location = LocationGlobalRelative(puntos[-i-1][0],puntos[-i-1][1], 3)  #Ejemplo en el rancho de Aron
+            print(f"Flying to target location {(puntos[-i-1][0],puntos[-i-1][1])}")
+        else:
+            target_location = LocationGlobalRelative(puntos[i][0],puntos[i][1], 3)
+            print(f"Flying to target location {(puntos[i][0],puntos[i][1])}")
+        vehicle.simple_goto(target_location)
 
-    print(f"Flying to target location {puntos_generados[i]}")
-    vehicle.simple_goto(target_location)
+        # Esperar a que llegue al punto (tolerancia de 50 cm)
+        while True:
 
-    # Esperar a que llegue al punto (tolerancia de 50 cm)
-    while True:
-        current_location = vehicle.location.global_relative_frame
-        distance_curr_target = distance.distance(
-                (current_location.lat, current_location.lon), 
-                (target_location.lat, target_location.lon)
-            ).meters
-        print(f"Distancia al punto {i}: {distance_curr_target:.2f} m")
+            #Obtener locacion actual del UAV
+            current_location = vehicle.location.global_relative_frame
 
-        if distance_curr_target <= 0.5:  # tolerancia de llegada
-            print(f"Llegó al punto {i}")
-            time.sleep(3)
-            ## Aqui podriamos poner que tome las fotos
+            #Calcular distancia entre la locacion actual y la objetivo 
+            distance_curr_target = distance.distance(
+                    (current_location.lat, current_location.lon), 
+                    (target_location.lat, target_location.lon)
+                ).meters
+            print(f"Distancia al punto {i}: {distance_curr_target:.2f} m")
 
-            break
+            #Verificar si la distancia entre los puntos es menor o igual a 0.5m
+            if distance_curr_target <= 0.5:  
+                print(f"Llegó al punto {i}")
+                time.sleep(3)
+                ## Aqui podriamos poner que tome las fotos
+
+                break
+    normal += 1
         
 
 # Mantener el script vivo un rato para que pueda volar
