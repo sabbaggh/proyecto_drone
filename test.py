@@ -56,16 +56,19 @@ for puntos in puntos_generados:
     puntos_totales = len(puntos)
     for i in range(puntos_totales):
         # 2) Definimos un punto GPS al que ir
-        #Se hace el recorrido al reves
+        #Definir si el recorrido actual es de inicio a fin o de fin a inicio
+        ##Se hace un objeto de ubicacion de dronekit con las coordenadas y la altitud
         if normal % 2 == 0:
             target_location = LocationGlobalRelative(puntos[-i-1][0],puntos[-i-1][1], 3)  #Ejemplo en el rancho de Aron
             print(f"Flying to target location {(puntos[-i-1][0],puntos[-i-1][1])}")
         else:
             target_location = LocationGlobalRelative(puntos[i][0],puntos[i][1], 3)
             print(f"Flying to target location {(puntos[i][0],puntos[i][1])}")
+        
+        #Hacer que el dron vuele al punto objetivo
         vehicle.simple_goto(target_location)
 
-        # Esperar a que llegue al punto (tolerancia de 50 cm)
+        #Ciclo while para esperar a que llegue al punto (tolerancia de 50 cm)
         while True:
 
             #Obtener locacion actual del UAV
@@ -81,10 +84,12 @@ for puntos in puntos_generados:
             #Verificar si la distancia entre los puntos es menor o igual a 0.5m
             if distance_curr_target <= 0.5:  
                 print(f"Llegó al punto {i}")
+                #Dejar al dron volando durante 3 segundos en ese punto
                 time.sleep(3)
                 ## Aqui podriamos poner que tome las fotos
 
                 break
+    #Se le aumenta 1 a normal para que en la siguiente iteracion se determine el tipo de recorrido (inicio a fin o fin a inicio)
     normal += 1
         
 
