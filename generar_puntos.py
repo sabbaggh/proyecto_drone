@@ -22,13 +22,19 @@ def generar_malla(esquinas, step=0.000020):
     malla = []
     
     lat = lat_min
+    #Ciclo while hasta que la latitud actual sea mayor a la latitud maxima
     while lat <= lat_max:
+        #Lista para almacenar los puntos generados en el "eje" de la longitud
         grid_points = []
         lon = lon_min
+        #Ciclo while hasta que la longitud actual sea mayor a la longitud maxima
         while lon <= lon_max:
             grid_points.append((lat, lon))
+            #Se aumenta la longitud actual por 0.000020
             lon += step
+        #Se aumenta la latitud actual por 0.000020
         lat += step
+        #Se ingresan los puntos del "eje" de longitud a la matriz general de puntos
         malla.append(grid_points)
 
     return malla
