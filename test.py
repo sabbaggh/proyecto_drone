@@ -42,7 +42,7 @@ def arm_and_takeoff(aTargetAltitude):
         if vehicle.location.global_relative_frame.alt >= aTargetAltitude*0.95:
             print("Reached target altitude")
             break
-        time.sleep(1)
+    time.sleep(10)
 
 # ----------------------------
 # 1) Despegar a 3 m
